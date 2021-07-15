@@ -18,20 +18,15 @@ const buildList = (centers, i) => {
     h4.append("Availability: ", centers[i].sessions[0].available_capacity_dose1);
     p.append('Date: ', centers[i].sessions[0].date);
     h5.append(centers[i].sessions[0].vaccine)
-    if (centers[i].sessions[0].available_capacity_dose1 !== 0) {
-        const button = document.createElement('button');
-        button.innerHTML = "<a href=https://selfregistration.cowin.gov.in/>Book Your Slot !!</a>"
-        div.append(h3, h4, h5, p, button);
-    }
-    else {
-        div.append(h3, h4, h5, p);
-    }
-
+    const button = document.createElement('button');
+    button.innerHTML = "<a href=https://selfregistration.cowin.gov.in/>Book Your Slot !!</a>"
+    div.append(h3, h4, h5, p, button);
     data.append(div);
 
 }
 
 const list = async () => {
+    let flag = false;
     var box = document.querySelectorAll('.box');
     if (typeof (box[0]) !== 'undefined' && box !== null) {
         for (let j = 0; j < box.length; j++) {
@@ -43,16 +38,16 @@ const list = async () => {
     for (let i = 0; i < centers.length; i++) {
         if (centers[i].sessions[0].available_capacity_dose1 !== 0) {
             buildList(centers, i)
+            flag = true;
         }
-        else {
-            const div = document.createElement('div');
-            div.className = 'box';
-            const h2 = document.createElement('h2');
-            h2.append('No slots available');
-            div.append(h2);
-            data.append(div);
-            break;
-        }
+    }
+    if (flag === false) {
+        const div = document.createElement('div');
+        const h2 = document.createElement('h2');
+        div.className = 'box';
+        h2.append("No slots available");
+        div.append(h2);
+        data.append(div);
     }
 }
 
