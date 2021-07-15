@@ -4,6 +4,7 @@ let dd = today.getDate();
 let mm = today.getMonth() + 1;
 let yyyy = today.getFullYear();
 const data = document.querySelector('.data');
+const audio = document.querySelector('audio');
 
 
 const buildList = (centers, i) => {
@@ -40,7 +41,7 @@ const list = async () => {
         let centersTmr = cowinListTomorrow.data.centers;
         let centers = centersToday.concat(centersTmr);
         for (let i = 0; i < centers.length; i++) {
-            if (centers[i].sessions[0].available_capacity_dose1 !== 0) {
+            if (centers[i].sessions[0].available_capacity_dose1 === 0) {
                 buildList(centers, i)
                 flag = true;
             }
@@ -53,10 +54,13 @@ const list = async () => {
             div.append(h2);
             data.append(div);
         }
+        else {
+            audio.play();
+        }
     }
     catch (e) {
         console.log(e);
     }
 }
-list();
+// list();
 setInterval(list, 5000);
