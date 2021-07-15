@@ -33,23 +33,30 @@ const list = async () => {
             box[j].remove();
         }
     }
-    const cowinListToday = await axios.get(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=305&date=${dd}-${mm}-${yyyy}`);
-    let centers = cowinListToday.data.centers;
-    for (let i = 0; i < centers.length; i++) {
-        if (centers[i].sessions[0].available_capacity_dose1 !== 0) {
-            buildList(centers, i)
-            flag = true;
+    try {
+        const cowinListToday = await axios.get(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=305&date=${dd}-${mm}-${yyyy}`);
+        const cowinListTomorrow = await axios.get(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=305&date=${dd + 1}-${mm}-${yyyy}`);
+        let centersToday = cowinListToday.data.centers;
+        let centersTmr = cowinListTomorrow.data.centers;
+        let centers = centersToday.concat(centersTmr);
+        for (let i = 0; i < centers.length; i++) {
+            if (centers[i].sessions[0].available_capacity_dose1 !== 0) {
+                buildList(centers, i)
+                flag = true;
+            }
+        }
+        if (flag === false) {
+            const div = document.createElement('div');
+            const h2 = document.createElement('h2');
+            div.className = 'box';
+            h2.append("No slots available");
+            div.append(h2);
+            data.append(div);
         }
     }
-    if (flag === false) {
-        const div = document.createElement('div');
-        const h2 = document.createElement('h2');
-        div.className = 'box';
-        h2.append("No slots available");
-        div.append(h2);
-        data.append(div);
+    catch (e) {
+        console.log(e);
     }
 }
-
 list();
 setInterval(list, 5000);
